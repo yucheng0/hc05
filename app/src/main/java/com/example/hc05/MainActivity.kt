@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -27,13 +29,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+        val myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
+
         CheckBt()
         Connect()
   //     writeData("1")
-        timer(initialDelay = 0, period = 100){
-          readData()            //注意讀寫都去協程做
+
+        btn1.setOnClickListener {
+            myViewModel.init()            //注意讀寫都去協程做
         }
-    }
+
+        }
+
 
     private fun CheckBt() {
         Toast.makeText(applicationContext, "It has started", Toast.LENGTH_SHORT).show()
@@ -85,22 +93,7 @@ class MainActivity : AppCompatActivity() {
             //Log.d(FragmentActivity.TAG, "Bug while sending stuff", e)
         }
     }
-    private fun readData(){
-        var inStream = btSocket.inputStream
-        try {
-            inStream = btSocket.inputStream
-        } catch (e:IOException) { }
-        println ("Test")
-         val buffer: ByteArray = ByteArray(10)
-         inStream.read(buffer)   //讀取資料放在buffer內, 輸出多少筆資料, 後面00是多出來的因為上面size=10）
-         for (i in buffer)  {
-         println(i) }    //收到49,13,10   (49=31h="1", 13=0d, 10=0a)
-
-        }
 
 
-    suspend fun  delay100ms(){
-        delay(100)
-        readData()
-    }
+
 }
